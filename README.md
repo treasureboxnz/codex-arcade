@@ -12,6 +12,7 @@ Original browser games built as static web projects.
 - `relic-run/` - Relic Run, a compact turn-based card combat run.
 - `drift-logic/` - Drift Logic, a top-down neon drift racer.
 - `tile-lab/` - Tile Lab, multiple 2048-style modes including Twin Drop.
+- `metro-brawl/` - Metro Brawl, a modern side-scrolling action brawler with five stages.
 
 ## Run locally
 

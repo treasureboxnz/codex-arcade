@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Metro Brawl</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <section class="game">
+        <header class="hud">
+          <div>
+            <h1>Metro Brawl</h1>
+            <p>Move through five city zones. Punch, jump, dash, and spend charge on a shock burst.</p>
+          </div>
+          <div class="stats">
+            <div><span>Stage</span><strong id="stage">1 / 5</strong></div>
+            <div><span>HP</span><strong id="hp">100</strong></div>
+            <div><span>Charge</span><strong id="charge">0</strong></div>
+            <div><span>Score</span><strong id="score">0</strong></div>
+          </div>
+        </header>
+
+        <div class="stage-wrap">
+          <canvas id="game" width="960" height="540" aria-label="Metro Brawl game canvas"></canvas>
+          <div class="overlay is-visible" id="overlay">
+            <strong id="overlayTitle">Metro Brawl</strong>
+            <span id="overlayText">Arrow keys or WASD move. J attacks, K jumps, L dashes, I uses shock burst.</span>
+            <button id="start" type="button">Start Patrol</button>
+          </div>
+        </div>
+
+        <footer class="controls">
+          <div class="keys">
+            <kbd>WASD / Arrows</kbd>
+            <kbd>J Attack</kbd>
+            <kbd>K Jump</kbd>
+            <kbd>L Dash</kbd>
+            <kbd>I Special</kbd>
+          </div>
+          <div class="touch">
+            <button data-key="left" type="button">Left</button>
+            <button data-key="right" type="button">Right</button>
+            <button data-key="up" type="button">Up</button>
+            <button data-key="down" type="button">Down</button>
+            <button data-key="attack" type="button">Attack</button>
+            <button data-key="jump" type="button">Jump</button>
+            <button data-key="dash" type="button">Dash</button>
+            <button data-key="special" type="button">Special</button>
+          </div>
+        </footer>
+      </section>
+    </main>
+
+    <script src="./game.js"></script>
+  </body>
+</html>

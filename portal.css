@@ -472,6 +472,62 @@ p {
   grid-template-columns: repeat(4, 1fr);
 }
 
+.brawl-preview {
+  overflow: hidden;
+  background:
+    linear-gradient(rgba(53, 223, 255, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(53, 223, 255, 0.08) 1px, transparent 1px),
+    linear-gradient(180deg, #081526, #0a0d16);
+  background-size: 52px 52px, 52px 52px, auto;
+}
+
+.brawl-preview .lane {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 42px;
+  height: 74px;
+  background: rgba(3, 8, 16, 0.72);
+  border-top: 1px solid var(--cyan);
+}
+
+.brawl-preview .fighter,
+.brawl-preview .punk {
+  position: absolute;
+  bottom: 72px;
+  border-radius: 10px;
+  box-shadow: 0 0 24px currentColor;
+}
+
+.brawl-preview .fighter {
+  left: 32%;
+  width: 48px;
+  height: 88px;
+  background: var(--cyan);
+  color: var(--cyan);
+}
+
+.brawl-preview .punk {
+  width: 44px;
+  height: 74px;
+  background: #ff4d6d;
+  color: #ff4d6d;
+}
+
+.brawl-preview .p1 { right: 32%; }
+.brawl-preview .p2 { right: 18%; bottom: 92px; background: var(--gold); color: var(--gold); }
+
+.brawl-preview .burst {
+  position: absolute;
+  left: 46%;
+  bottom: 118px;
+  width: 84px;
+  height: 84px;
+  border: 2px solid var(--green);
+  border-radius: 50%;
+  box-shadow: 0 0 34px rgba(77, 255, 141, 0.86);
+}
+
 .game-body {
   display: grid;
   gap: 18px;
