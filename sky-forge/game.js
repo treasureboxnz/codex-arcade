@@ -29,6 +29,7 @@ let score;
 let best = Number(localStorage.getItem(bestKey) || 0);
 let lives;
 let weapon;
+let weaponLevel;
 let weaponTimer;
 let fireCooldown;
 let enemyTimer;
@@ -63,6 +64,7 @@ function resetGame() {
   score = 0;
   lives = 3;
   weapon = "pulse";
+  weaponLevel = 1;
   weaponTimer = 0;
   fireCooldown = 0;
   enemyTimer = 0;
@@ -145,32 +147,43 @@ function updatePlayer(dt) {
   if (keys.has("Space") || keys.has("KeyJ") || keys.has("KeyK")) fire();
   if (weaponTimer > 0) {
     weaponTimer -= dt;
-    if (weaponTimer <= 0) weapon = "pulse";
+    if (weaponTimer <= 0) {
+      weapon = "pulse";
+      weaponLevel = 1;
+    }
   }
 }
 
 function fire() {
   if (fireCooldown > 0) return;
   if (weapon === "spread") {
-    addBullet(player.x, player.y - 36, -420, -160, 9, "#45e8ff", 1);
-    addBullet(player.x, player.y - 38, -520, 0, 9, "#45e8ff", 1);
-    addBullet(player.x, player.y - 36, -420, 160, 9, "#45e8ff", 1);
-    fireCooldown = 0.16;
+    const angles = weaponLevel >= 3 ? [-260, -130, 0, 130, 260] : weaponLevel >= 2 ? [-190, -65, 65, 190] : [-160, 0, 160];
+    angles.forEach((vx, index) => addBullet(player.x + (index - (angles.length - 1) / 2) * 8, player.y - 36, vx === 0 ? -560 : -440, vx, 9, "#45e8ff", 1 + weaponLevel * 0.18));
+    fireCooldown = weaponLevel >= 3 ? 0.12 : 0.16;
   } else if (weapon === "beam") {
-    addBullet(player.x - 12, player.y - 40, -720, 0, 7, "#a977ff", 2);
-    addBullet(player.x + 12, player.y - 40, -720, 0, 7, "#a977ff", 2);
-    fireCooldown = 0.08;
+    addBullet(player.x - 12, player.y - 40, -760, 0, 7, "#a977ff", 2 + weaponLevel * 0.42, weaponLevel >= 3 ? "pierce" : "normal");
+    addBullet(player.x + 12, player.y - 40, -760, 0, 7, "#a977ff", 2 + weaponLevel * 0.42, weaponLevel >= 3 ? "pierce" : "normal");
+    if (weaponLevel >= 2) addBullet(player.x, player.y - 52, -820, 0, 8, "#d8c4ff", 1.8, weaponLevel >= 3 ? "pierce" : "normal");
+    fireCooldown = weaponLevel >= 3 ? 0.06 : 0.08;
   } else if (weapon === "burst") {
-    for (let i = -2; i <= 2; i += 1) addBullet(player.x + i * 11, player.y - 35, -600, i * 62, 8, "#ffd166", 1.4);
-    fireCooldown = 0.22;
+    const width = weaponLevel >= 3 ? 3 : 2;
+    for (let i = -width; i <= width; i += 1) addBullet(player.x + i * 10, player.y - 35, -620, i * (weaponLevel >= 3 ? 70 : 58), 8 + weaponLevel, "#ffd166", 1.25 + weaponLevel * 0.35);
+    fireCooldown = weaponLevel >= 3 ? 0.18 : 0.22;
   } else if (weapon === "homing") {
-    addBullet(player.x - 13, player.y - 34, -430, -40, 8, "#ff7ad9", 1.15, "homing");
-    addBullet(player.x + 13, player.y - 34, -430, 40, 8, "#ff7ad9", 1.15, "homing");
-    fireCooldown = 0.2;
+    const count = weaponLevel + 1;
+    for (let i = 0; i < count; i += 1) {
+      const offset = (i - (count - 1) / 2) * 18;
+      addBullet(player.x + offset, player.y - 34, -430, offset * 3, 8, "#ff7ad9", 1.05 + weaponLevel * 0.24, "homing");
+    }
+    fireCooldown = weaponLevel >= 3 ? 0.15 : 0.2;
   } else if (weapon === "lance") {
-    addBullet(player.x, player.y - 48, -860, 0, 13, "#ffffff", 3.8, "pierce");
-    addBullet(player.x, player.y - 24, -620, 0, 7, "#45e8ff", 1.6, "pierce");
-    fireCooldown = 0.26;
+    addBullet(player.x, player.y - 48, -900, 0, 13 + weaponLevel * 2, "#ffffff", 3.4 + weaponLevel * 1.1, "pierce");
+    addBullet(player.x, player.y - 24, -650, 0, 7, "#45e8ff", 1.4 + weaponLevel * 0.45, "pierce");
+    if (weaponLevel >= 2) {
+      addBullet(player.x - 24, player.y - 32, -780, -28, 9, "#ffffff", 2.4, "pierce");
+      addBullet(player.x + 24, player.y - 32, -780, 28, 9, "#ffffff", 2.4, "pierce");
+    }
+    fireCooldown = weaponLevel >= 3 ? 0.2 : 0.26;
   } else {
     addBullet(player.x, player.y - 40, -560, 0, 8, "#54ffa3", 1);
     fireCooldown = 0.13;
@@ -306,8 +319,7 @@ function checkCollisions() {
   powerups.forEach((p) => {
     if (!p.dead && circleRect(p, player)) {
       p.dead = true;
-      weapon = p.type;
-      weaponTimer = 14;
+      collectWeapon(p.type);
       score += 120;
       burst(p.x, p.y, colorForWeapon(p.type), 18);
     }
@@ -526,7 +538,7 @@ function updateHud() {
   scoreEl.textContent = score;
   bestEl.textContent = Math.max(best, score);
   livesEl.textContent = lives;
-  weaponEl.textContent = weaponNames[weapon];
+  weaponEl.textContent = weapon === "pulse" ? weaponNames[weapon] : `${weaponNames[weapon]} L${weaponLevel}`;
   bossPanel.classList.toggle("is-visible", Boolean(boss && boss.hp > 0));
 }
 
@@ -553,6 +565,17 @@ function nearestEnemy(point) {
     }
   });
   return bestTarget;
+}
+
+function collectWeapon(type) {
+  if (weapon === type) {
+    weaponLevel = Math.min(3, weaponLevel + 1);
+    weaponTimer = Math.min(22, weaponTimer + 8);
+  } else {
+    weapon = type;
+    weaponLevel = 1;
+    weaponTimer = 16;
+  }
 }
 
 function clamp(value, min, max) {
