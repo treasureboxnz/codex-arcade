@@ -40,14 +40,18 @@
             <kbd>I Special</kbd>
           </div>
           <div class="touch">
-            <button data-key="left" type="button">Left</button>
-            <button data-key="right" type="button">Right</button>
-            <button data-key="up" type="button">Up</button>
-            <button data-key="down" type="button">Down</button>
-            <button data-key="attack" type="button">Attack</button>
-            <button data-key="jump" type="button">Jump</button>
-            <button data-key="dash" type="button">Dash</button>
-            <button data-key="special" type="button">Special</button>
+            <div class="move-pad" aria-label="Move">
+              <button data-key="up" class="up" type="button">Up</button>
+              <button data-key="left" class="left" type="button">Left</button>
+              <button data-key="right" class="right" type="button">Right</button>
+              <button data-key="down" class="down" type="button">Down</button>
+            </div>
+            <div class="action-pad" aria-label="Actions">
+              <button data-key="attack" class="attack" type="button">Attack</button>
+              <button data-key="jump" type="button">Jump</button>
+              <button data-key="dash" type="button">Dash</button>
+              <button data-key="special" type="button">Special</button>
+            </div>
           </div>
         </footer>
       </section>

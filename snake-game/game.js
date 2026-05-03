@@ -281,10 +281,12 @@ speedSelect.addEventListener("change", () => {
 });
 
 dpadButtons.forEach((button) => {
-  button.addEventListener("click", () => {
+  const press = (event) => {
+    event.preventDefault();
     setDirection(button.dataset.dir);
     if (!running && (!gameOver || awaitingContinue)) startGame();
-  });
+  };
+  button.addEventListener("pointerdown", press);
 });
 
 resetGame();

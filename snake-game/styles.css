@@ -268,8 +268,12 @@ kbd {
 
 @media (max-width: 860px) {
   .app-shell {
-    padding: 16px;
+    padding: 16px 16px 188px;
     place-items: start center;
+  }
+
+  body {
+    touch-action: none;
   }
 
   .top-bar {
@@ -284,5 +288,24 @@ kbd {
 
   .control-panel {
     min-height: auto;
+  }
+
+  .dpad {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 20;
+    grid-template-columns: repeat(3, 72px);
+    grid-template-rows: repeat(3, 48px);
+    justify-content: center;
+    padding: 14px;
+    margin: 0;
+    border-top: 1px solid var(--line);
+    background: rgba(5, 12, 10, 0.94);
+  }
+
+  .dpad button {
+    min-height: 48px;
   }
 }

@@ -36,14 +36,20 @@
         </div>
 
         <footer class="controls">
-          <button id="pauseBtn" type="button" aria-label="Pause">Pause</button>
-          <button id="restartBtn" type="button" aria-label="Restart">Restart</button>
-          <div class="touch-pad" aria-label="Touch movement controls">
-            <button data-key="ArrowUp" type="button">Up</button>
-            <button data-key="ArrowLeft" type="button">Left</button>
-            <button data-key="Space" type="button">Fire</button>
-            <button data-key="ArrowRight" type="button">Right</button>
-            <button data-key="ArrowDown" type="button">Down</button>
+          <div class="system-buttons">
+            <button id="pauseBtn" type="button" aria-label="Pause">Pause</button>
+            <button id="restartBtn" type="button" aria-label="Restart">Restart</button>
+          </div>
+          <div class="mobile-controls" aria-label="Touch flight controls">
+            <div class="dpad" aria-label="Move">
+              <button data-key="ArrowUp" class="up" type="button">Up</button>
+              <button data-key="ArrowLeft" class="left" type="button">Left</button>
+              <button data-key="ArrowRight" class="right" type="button">Right</button>
+              <button data-key="ArrowDown" class="down" type="button">Down</button>
+            </div>
+            <div class="action-pad" aria-label="Actions">
+              <button data-key="Space" class="fire" type="button">Fire</button>
+            </div>
           </div>
         </footer>
       </section>

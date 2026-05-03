@@ -12,7 +12,7 @@ const pauseBtn = document.querySelector("#pauseBtn");
 const restartBtn = document.querySelector("#restartBtn");
 const bossPanel = document.querySelector("#bossPanel");
 const bossMeter = document.querySelector("#bossMeter");
-const touchButtons = document.querySelectorAll(".touch-pad button");
+const touchButtons = document.querySelectorAll(".mobile-controls button");
 
 const W = canvas.width;
 const H = canvas.height;
