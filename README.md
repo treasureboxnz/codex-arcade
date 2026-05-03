@@ -6,6 +6,12 @@ Original browser games built as static web projects.
 
 - `snake-game/` - Neon Snake, a keyboard and touch controlled snake game.
 - `sky-forge/` - Sky Forge, a vertical shooter with power-ups, boss fights, and continue.
+- `word-vault/` - Word Vault, a 5-letter word deduction puzzle.
+- `orb-orchard/` - Orb Orchard, a merge/drop orb game.
+- `cell-rush/` - Cell Rush, an arena growth game.
+- `relic-run/` - Relic Run, a compact turn-based card combat run.
+- `drift-logic/` - Drift Logic, a top-down neon drift racer.
+- `tile-lab/` - Tile Lab, multiple 2048-style modes including Twin Drop.
 
 ## Run locally
 

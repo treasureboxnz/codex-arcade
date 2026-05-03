@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tile Lab</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <section class="game">
+        <header class="top">
+          <div>
+            <h1>Tile Lab</h1>
+            <p>Slide tiles, merge matching values, and test multiple 2048-style rule sets.</p>
+          </div>
+          <div class="scorebar">
+            <div><span>Score</span><strong id="score">0</strong></div>
+            <div><span>Best</span><strong id="best">0</strong></div>
+            <button id="restart" type="button">Restart</button>
+          </div>
+        </header>
+
+        <div class="mode-tabs" role="tablist" aria-label="Game modes">
+          <button class="is-active" data-mode="classic" type="button">Classic</button>
+          <button data-mode="twin" type="button">Twin Drop</button>
+          <button data-mode="blocks" type="button">Block Run</button>
+        </div>
+
+        <section class="play">
+          <div class="board" id="board" aria-label="Tile board"></div>
+          <aside class="panel">
+            <div>
+              <span class="label">Mode</span>
+              <h2 id="modeTitle">Classic</h2>
+              <p id="modeDescription">One new tile appears after each valid move. Reach the largest value you can.</p>
+            </div>
+            <div class="tips">
+              <span>Controls</span>
+              <kbd>Arrow Keys</kbd>
+              <kbd>W A S D</kbd>
+              <kbd>Swipe</kbd>
+            </div>
+            <div class="touch-grid">
+              <button data-dir="up" type="button">Up</button>
+              <button data-dir="left" type="button">Left</button>
+              <button data-dir="right" type="button">Right</button>
+              <button data-dir="down" type="button">Down</button>
+            </div>
+          </aside>
+        </section>
+
+        <div class="overlay" id="overlay">
+          <strong id="overlayTitle">Game Over</strong>
+          <span id="overlayText">No more moves.</span>
+          <button id="overlayRestart" type="button">Play Again</button>
+        </div>
+      </section>
+    </main>
+
+    <script src="./game.js"></script>
+  </body>
+</html>

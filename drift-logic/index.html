@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Drift Logic</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <section class="game-card" aria-label="Drift Logic arcade racer">
+        <header class="hud">
+          <div>
+            <h1>Drift Logic</h1>
+            <p>Thread the neon gates, skim the walls, and hold controlled slides for score.</p>
+          </div>
+          <div class="stats" aria-label="Race statistics">
+            <div><span>Score</span><strong id="score">0</strong></div>
+            <div><span>Time</span><strong id="time">75.0</strong></div>
+            <div><span>Gate</span><strong id="gate">1/12</strong></div>
+            <div><span>Best</span><strong id="best">0</strong></div>
+          </div>
+        </header>
+
+        <div class="play-layout">
+          <div class="track-wrap">
+            <canvas id="game" width="960" height="640" aria-label="Top-down drift track"></canvas>
+            <div class="overlay is-visible" id="overlay">
+              <strong id="overlayTitle">Ignition Ready</strong>
+              <span id="overlayText">Arrow keys or WASD to steer and accelerate. Pass each gate in order.</span>
+              <button id="startBtn" type="button">Start Run</button>
+            </div>
+          </div>
+
+          <aside class="control-panel" aria-label="Game controls">
+            <div class="meter-block">
+              <div class="meter-copy">
+                <span>Drift Chain</span>
+                <strong id="driftLabel">0</strong>
+              </div>
+              <div class="meter-track"><span id="driftMeter"></span></div>
+            </div>
+
+            <div class="bonus-grid">
+              <div><span>Near Miss</span><strong id="nearMiss">0</strong></div>
+              <div><span>Speed</span><strong id="speed">0</strong></div>
+            </div>
+
+            <div class="button-row">
+              <button id="pauseBtn" type="button">Pause</button>
+              <button id="restartBtn" type="button">Restart</button>
+            </div>
+
+            <div class="guide">
+              <span>Drive</span>
+              <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd>
+              <kbd>&uarr;</kbd><kbd>&larr;</kbd><kbd>&darr;</kbd><kbd>&rarr;</kbd>
+            </div>
+
+            <div class="touch-pad" aria-label="Touch driving controls">
+              <button data-key="ArrowUp" type="button">Gas</button>
+              <button data-key="ArrowLeft" type="button">Left</button>
+              <button data-key="ArrowDown" type="button">Brake</button>
+              <button data-key="ArrowRight" type="button">Right</button>
+            </div>
+          </aside>
+        </div>
+      </section>
+    </main>
+
+    <script src="./game.js"></script>
+  </body>
+</html>

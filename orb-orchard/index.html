@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Orb Orchard</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="game-stage" aria-label="Orb Orchard merge drop game">
+        <header class="top-bar">
+          <a class="back-link" href="../" aria-label="Back to Codex Arcade">CA</a>
+          <div>
+            <p class="label">Codex Arcade</p>
+            <h1>Orb Orchard</h1>
+            <p class="lede">Guide the lane, drop matching orbs, and grow a luminous harvest before the canopy fills.</p>
+          </div>
+          <div class="status-pill" id="statusText">Ready</div>
+        </header>
+
+        <div class="play-layout">
+          <div class="board-wrap">
+            <canvas id="gameCanvas" width="720" height="960" aria-label="Orb Orchard board"></canvas>
+            <div class="overlay is-visible" id="gameOverlay">
+              <strong id="overlayTitle">Ready to Drop</strong>
+              <span id="overlayText">Move with mouse or arrow keys. Space drops the glowing orb.</span>
+            </div>
+          </div>
+
+          <aside class="control-panel" aria-label="Game status and controls">
+            <div class="score-grid">
+              <div>
+                <span>Score</span>
+                <strong id="scoreValue">0</strong>
+              </div>
+              <div>
+                <span>Best</span>
+                <strong id="bestValue">0</strong>
+              </div>
+            </div>
+
+            <div class="next-card" aria-label="Next orb">
+              <span>Next Orb</span>
+              <canvas id="nextCanvas" width="180" height="140"></canvas>
+            </div>
+
+            <div class="button-row">
+              <button id="startButton" class="primary-button" type="button">Start</button>
+              <button id="dropButton" class="icon-button" type="button" aria-label="Drop orb">v</button>
+              <button id="restartButton" class="icon-button" type="button" aria-label="Restart">R</button>
+            </div>
+
+            <div class="guide">
+              <span>Controls</span>
+              <kbd>&larr;</kbd><kbd>&rarr;</kbd>
+              <kbd>A</kbd><kbd>D</kbd>
+              <kbd>Space</kbd>
+            </div>
+
+            <div class="lane-pad" aria-label="Touch controls">
+              <button data-move="-1" aria-label="Move lane left">&larr;</button>
+              <button data-drop="true" aria-label="Drop orb">Drop</button>
+              <button data-move="1" aria-label="Move lane right">&rarr;</button>
+            </div>
+          </aside>
+        </div>
+      </section>
+    </main>
+
+    <script src="./game.js"></script>
+  </body>
+</html>

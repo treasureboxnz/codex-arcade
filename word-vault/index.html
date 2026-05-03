@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Word Vault | Codex Arcade</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="game-shell">
+      <header class="topbar">
+        <a class="brand" href="../" aria-label="Back to Codex Arcade">
+          <span class="brand-mark">WV</span>
+          <span>
+            <strong>Word Vault</strong>
+            <em>Codex Arcade</em>
+          </span>
+        </a>
+        <button class="icon-button" id="newPuzzleButton" type="button" aria-label="Start a new puzzle" title="New puzzle">
+          <svg aria-hidden="true" viewBox="0 0 24 24">
+            <path d="M20 12a8 8 0 1 1-2.34-5.66" />
+            <path d="M20 4v6h-6" />
+          </svg>
+        </button>
+      </header>
+
+      <section class="hud" aria-label="Puzzle status">
+        <div>
+          <span class="hud-label">Guesses</span>
+          <strong id="guessCount">0/6</strong>
+        </div>
+        <div>
+          <span class="hud-label">Vault Signal</span>
+          <strong id="signalStatus">Scanning</strong>
+        </div>
+        <div>
+          <span class="hud-label">Word Size</span>
+          <strong>5</strong>
+        </div>
+      </section>
+
+      <section class="playfield" aria-label="Word puzzle">
+        <div class="board-wrap">
+          <div class="scanner" aria-hidden="true"></div>
+          <div class="board" id="board" aria-label="Six guesses of five letters"></div>
+        </div>
+
+        <div class="legend" aria-label="Feedback key">
+          <span><i class="exact"></i> Locked</span>
+          <span><i class="present"></i> Routed</span>
+          <span><i class="absent"></i> Dark</span>
+        </div>
+
+        <p class="message" id="message" role="status" aria-live="polite">Crack the five-letter vault code.</p>
+
+        <div class="keyboard" id="keyboard" aria-label="On-screen keyboard"></div>
+      </section>
+    </main>
+
+    <div class="overlay hidden" id="overlay" role="dialog" aria-modal="true" aria-labelledby="overlayTitle">
+      <div class="modal">
+        <p class="modal-kicker" id="overlayKicker">Vault Opened</p>
+        <h1 id="overlayTitle">Clean solve.</h1>
+        <p id="overlayText">The code surrendered in time.</p>
+        <div class="modal-actions">
+          <button class="primary-button" id="playAgainButton" type="button">New Puzzle</button>
+          <button class="secondary-button" id="closeOverlayButton" type="button">Review Board</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="./game.js"></script>
+  </body>
+</html>

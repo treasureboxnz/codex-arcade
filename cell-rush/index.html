@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cell Rush | Codex Arcade</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="game-shell">
+      <header class="topbar">
+        <a class="brand" href="../" aria-label="Back to Codex Arcade">
+          <span class="brand-mark">CR</span>
+          <span>
+            <strong>Cell Rush</strong>
+            <em>Codex Arcade</em>
+          </span>
+        </a>
+
+        <div class="stat-strip" aria-label="Run stats">
+          <div>
+            <span>Score</span>
+            <strong id="scoreText">0</strong>
+          </div>
+          <div>
+            <span>Mass</span>
+            <strong id="massText">18</strong>
+          </div>
+          <div>
+            <span>Threat</span>
+            <strong id="threatText">Low</strong>
+          </div>
+        </div>
+
+        <button class="restart-button" id="restartButton" type="button">Restart</button>
+      </header>
+
+      <section class="arena-panel" aria-label="Cell Rush game arena">
+        <canvas id="gameCanvas" aria-label="Cell Rush playable arena"></canvas>
+
+        <div class="screen-card" id="startOverlay">
+          <p class="label">Arena Online</p>
+          <h1>Grow fast. Pick your fights.</h1>
+          <p>
+            Sweep up energy, dodge oversized hunters, then turn the chase around once
+            your cell has enough mass.
+          </p>
+          <button id="startButton" type="button">Start Run</button>
+        </div>
+
+        <div class="screen-card hidden" id="gameOverOverlay">
+          <p class="label">Cell Dissolved</p>
+          <h2>Run Complete</h2>
+          <p id="finalText">Score 0 · Mass 18</p>
+          <button id="againButton" type="button">Rush Again</button>
+        </div>
+      </section>
+
+      <footer class="status-row">
+        <span>Mouse or touch to steer</span>
+        <span>WASD / arrows for keyboard drift</span>
+        <span>Eat smaller hunters, avoid larger ones</span>
+      </footer>
+    </main>
+
+    <script src="./game.js"></script>
+  </body>
+</html>

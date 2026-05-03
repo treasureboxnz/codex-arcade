@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Relic Run</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <section class="game" aria-label="Relic Run card dungeon">
+        <header class="topbar">
+          <div>
+            <h1>Relic Run</h1>
+            <p>Spend energy, read enemy intent, collect relics, clear three rooms.</p>
+          </div>
+          <div class="run-status" id="runStatus">Room 1 / 3</div>
+        </header>
+
+        <section class="board">
+          <div class="player-zone" aria-label="Player status">
+            <div class="hero-orb" aria-hidden="true">
+              <span></span>
+            </div>
+            <div class="meter-row">
+              <span>HP</span>
+              <strong id="playerHp">48 / 48</strong>
+            </div>
+            <meter id="playerHpMeter" min="0" max="48" value="48"></meter>
+            <div class="resource-grid">
+              <div>
+                <span>Energy</span>
+                <strong id="energyText">3 / 3</strong>
+              </div>
+              <div>
+                <span>Block</span>
+                <strong id="blockText">0</strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="dungeon-zone" aria-label="Dungeon room">
+            <div class="room-track" id="roomTrack" aria-label="Room progress"></div>
+            <div class="enemy-card">
+              <div class="enemy-art" id="enemyArt" aria-hidden="true"></div>
+              <div class="enemy-readout">
+                <div>
+                  <span id="enemyName">Rust Acolyte</span>
+                  <strong id="enemyIntent">Intent: Strike 7</strong>
+                </div>
+                <meter id="enemyHpMeter" min="0" max="32" value="32"></meter>
+                <p id="enemyHp">32 / 32 HP</p>
+              </div>
+            </div>
+          </div>
+
+          <aside class="side-panel" aria-label="Deck and relics">
+            <div class="pile-grid">
+              <div>
+                <span>Draw</span>
+                <strong id="drawCount">0</strong>
+              </div>
+              <div>
+                <span>Discard</span>
+                <strong id="discardCount">0</strong>
+              </div>
+            </div>
+            <div>
+              <div class="panel-title">Relics</div>
+              <div class="relic-list" id="relicList"></div>
+            </div>
+            <div class="log" id="battleLog" aria-live="polite"></div>
+          </aside>
+        </section>
+
+        <section class="hand-zone" aria-label="Card hand">
+          <div class="hand-header">
+            <div>
+              <span>Hand</span>
+              <strong id="turnText">Your Turn</strong>
+            </div>
+            <button class="end-button" id="endTurnBtn" type="button">End Turn</button>
+          </div>
+          <div class="hand" id="hand"></div>
+        </section>
+      </section>
+
+      <div class="choice-overlay" id="choiceOverlay" aria-hidden="true">
+        <div class="choice-panel">
+          <span class="small-label">Relic Found</span>
+          <h2>Choose one upgrade</h2>
+          <div class="choice-grid" id="choiceGrid"></div>
+        </div>
+      </div>
+
+      <div class="result-overlay" id="resultOverlay" aria-hidden="true">
+        <div class="result-panel">
+          <span class="small-label" id="resultLabel">Run Complete</span>
+          <h2 id="resultTitle">Victory</h2>
+          <p id="resultText">The vault opens and the last relic hums in your pack.</p>
+          <button id="restartBtn" type="button">Restart Run</button>
+        </div>
+      </div>
+    </main>
+
+    <script src="./game.js"></script>
+  </body>
+</html>
