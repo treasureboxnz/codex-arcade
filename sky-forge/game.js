@@ -5,6 +5,7 @@ const scoreEl = document.querySelector("#score");
 const bestEl = document.querySelector("#best");
 const livesEl = document.querySelector("#lives");
 const weaponEl = document.querySelector("#weapon");
+const weaponLabelEl = document.querySelector("#weaponLabel");
 const overlay = document.querySelector("#overlay");
 const startBtn = document.querySelector("#startBtn");
 const pauseBtn = document.querySelector("#pauseBtn");
@@ -37,6 +38,7 @@ let powerTimer;
 let boss;
 let bossSpawned;
 let loopLevel;
+let stageIndex;
 let nextBossAt;
 let running;
 let paused;
@@ -54,6 +56,45 @@ const weaponNames = {
   homing: "Homing",
   lance: "Lance",
 };
+
+const stages = [
+  {
+    name: "Nebula Gate",
+    boss: "Overseer",
+    colors: ["#07112a", "#081828", "#040813"],
+    accent: "#45e8ff",
+    enemyBias: { wing: 0.18, turret: 0.42 },
+    spawn: 0,
+    bossHp: 1,
+  },
+  {
+    name: "Crimson Rift",
+    boss: "Rift Warden",
+    colors: ["#1a0712", "#210a1d", "#080510"],
+    accent: "#ff4d6d",
+    enemyBias: { wing: 0.34, turret: 0.52 },
+    spawn: 0.08,
+    bossHp: 1.18,
+  },
+  {
+    name: "Ion Foundry",
+    boss: "Forge Titan",
+    colors: ["#101006", "#1d1a08", "#080806"],
+    accent: "#ffd166",
+    enemyBias: { wing: 0.2, turret: 0.68 },
+    spawn: 0.12,
+    bossHp: 1.35,
+  },
+  {
+    name: "Eclipse Core",
+    boss: "Eclipse Prime",
+    colors: ["#07071a", "#120b24", "#04050d"],
+    accent: "#a977ff",
+    enemyBias: { wing: 0.44, turret: 0.7 },
+    spawn: 0.18,
+    bossHp: 1.55,
+  },
+];
 
 function resetGame() {
   player = { x: W / 2, y: H - 120, w: 54, h: 70, invincible: 0 };
@@ -74,6 +115,7 @@ function resetGame() {
   boss = null;
   bossSpawned = false;
   loopLevel = 1;
+  stageIndex = 0;
   nextBossAt = 55;
   running = false;
   paused = false;
@@ -223,12 +265,14 @@ function updateBullets(dt) {
 }
 
 function spawnWaves(dt) {
+  const stage = currentStage();
   enemyTimer -= dt;
   powerTimer -= dt;
   if (enemyTimer <= 0 && !boss) {
-    const type = Math.random() < 0.18 ? "wing" : Math.random() < 0.42 ? "turret" : "drone";
+    const roll = Math.random();
+    const type = roll < stage.enemyBias.wing ? "wing" : roll < stage.enemyBias.turret ? "turret" : "drone";
     spawnEnemy(type);
-    enemyTimer = Math.max(0.22, 0.9 - distance * 0.008 - loopLevel * 0.055);
+    enemyTimer = Math.max(0.2, 0.9 - distance * 0.008 - loopLevel * 0.055 - stage.spawn);
   }
   if (powerTimer <= 0) {
     spawnPowerup();
@@ -260,8 +304,9 @@ function spawnEnemy(type) {
 }
 
 function spawnBoss() {
+  const stage = currentStage();
   bossSpawned = true;
-  const hp = 110 + (loopLevel - 1) * 55;
+  const hp = Math.round((110 + (loopLevel - 1) * 55) * stage.bossHp);
   boss = { type: "boss", x: W / 2, y: -105, w: 210, h: 120, hp, maxHp: hp, shoot: 0.4, phase: 0, score: 2000 + (loopLevel - 1) * 600 };
   enemies.push(boss);
   bossPanel.classList.add("is-visible");
@@ -352,8 +397,9 @@ function damagePlayer() {
 }
 
 function winGame() {
-  score += 3000 + loopLevel * 500;
-  loopLevel += 1;
+  score += 3000 + loopLevel * 500 + stageIndex * 350;
+  stageIndex = (stageIndex + 1) % stages.length;
+  if (stageIndex === 0) loopLevel += 1;
   nextBossAt = distance + 45;
   bossSpawned = false;
   boss = null;
@@ -442,10 +488,11 @@ function draw() {
 }
 
 function drawSpace() {
+  const stage = currentStage();
   const sky = ctx.createLinearGradient(0, 0, 0, H);
-  sky.addColorStop(0, "#07112a");
-  sky.addColorStop(0.52, "#081828");
-  sky.addColorStop(1, "#040813");
+  sky.addColorStop(0, stage.colors[0]);
+  sky.addColorStop(0.52, stage.colors[1]);
+  sky.addColorStop(1, stage.colors[2]);
   ctx.fillStyle = sky;
   ctx.fillRect(0, 0, W, H);
   stars.forEach((s) => {
@@ -455,7 +502,7 @@ function drawSpace() {
   });
   ctx.globalAlpha = 1;
   for (let y = (distance * 80) % 80; y < H; y += 80) {
-    ctx.strokeStyle = "rgba(69, 232, 255, 0.045)";
+    ctx.strokeStyle = hexToRgba(stage.accent, 0.06);
     ctx.beginPath();
     ctx.moveTo(0, y);
     ctx.lineTo(W, y);
@@ -563,9 +610,10 @@ function updateHud() {
   scoreEl.textContent = score;
   bestEl.textContent = Math.max(best, score);
   livesEl.textContent = lives;
+  weaponLabelEl.textContent = `Stage ${stageIndex + 1}`;
   weaponEl.textContent = weapon === "pulse" ? weaponNames[weapon] : `${weaponNames[weapon]} L${weaponLevel}`;
   bossPanel.classList.toggle("is-visible", Boolean(boss && boss.hp > 0));
-  bossPanel.querySelector("span").textContent = `Overseer ${loopLevel}`;
+  bossPanel.querySelector("span").textContent = `${currentStage().boss} ${loopLevel}`;
 }
 
 function showOverlay(title, message, button) {
@@ -602,6 +650,18 @@ function collectWeapon(type) {
     weaponLevel = 1;
     weaponTimer = 16;
   }
+}
+
+function currentStage() {
+  return stages[stageIndex];
+}
+
+function hexToRgba(hex, alpha) {
+  const value = hex.replace("#", "");
+  const red = parseInt(value.slice(0, 2), 16);
+  const green = parseInt(value.slice(2, 4), 16);
+  const blue = parseInt(value.slice(4, 6), 16);
+  return `rgba(${red}, ${green}, ${blue}, ${alpha})`;
 }
 
 function clamp(value, min, max) {
