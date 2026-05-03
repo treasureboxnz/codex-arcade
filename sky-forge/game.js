@@ -36,6 +36,8 @@ let enemyTimer;
 let powerTimer;
 let boss;
 let bossSpawned;
+let loopLevel;
+let nextBossAt;
 let running;
 let paused;
 let gameOver;
@@ -71,6 +73,8 @@ function resetGame() {
   powerTimer = 2.2;
   boss = null;
   bossSpawned = false;
+  loopLevel = 1;
+  nextBossAt = 55;
   running = false;
   paused = false;
   gameOver = false;
@@ -224,13 +228,13 @@ function spawnWaves(dt) {
   if (enemyTimer <= 0 && !boss) {
     const type = Math.random() < 0.18 ? "wing" : Math.random() < 0.42 ? "turret" : "drone";
     spawnEnemy(type);
-    enemyTimer = Math.max(0.28, 0.9 - distance * 0.012);
+    enemyTimer = Math.max(0.22, 0.9 - distance * 0.008 - loopLevel * 0.055);
   }
   if (powerTimer <= 0) {
     spawnPowerup();
     powerTimer = 4 + Math.random() * 3;
   }
-  if (distance > 55 && !bossSpawned) spawnBoss();
+  if (distance > nextBossAt && !bossSpawned) spawnBoss();
 }
 
 function spawnEnemy(type) {
@@ -240,12 +244,25 @@ function spawnEnemy(type) {
     wing: { hp: 1, speed: 180, score: 60 },
     turret: { hp: 4, speed: 78, score: 150 },
   }[type];
-  enemies.push({ type, x, y: -50, w: 52, h: 42, shoot: 1.4 + Math.random(), phase: Math.random() * 8, ...stats });
+  enemies.push({
+    type,
+    x,
+    y: -50,
+    w: 52,
+    h: 42,
+    shoot: Math.max(0.62, 1.4 + Math.random() - loopLevel * 0.08),
+    phase: Math.random() * 8,
+    ...stats,
+    hp: stats.hp + Math.floor((loopLevel - 1) * 0.65),
+    speed: stats.speed + loopLevel * 8,
+    score: stats.score + (loopLevel - 1) * 18,
+  });
 }
 
 function spawnBoss() {
   bossSpawned = true;
-  boss = { type: "boss", x: W / 2, y: -105, w: 210, h: 120, hp: 110, maxHp: 110, shoot: 0.4, phase: 0, score: 2000 };
+  const hp = 110 + (loopLevel - 1) * 55;
+  boss = { type: "boss", x: W / 2, y: -105, w: 210, h: 120, hp, maxHp: hp, shoot: 0.4, phase: 0, score: 2000 + (loopLevel - 1) * 600 };
   enemies.push(boss);
   bossPanel.classList.add("is-visible");
 }
@@ -259,7 +276,7 @@ function updateEnemies(dt) {
       e.shoot -= dt;
       if (e.shoot <= 0) {
         for (let i = -2; i <= 2; i += 1) enemyBullets.push({ x: e.x, y: e.y + 55, vx: i * 70, vy: 250, r: 8, color: "#ff4d6d" });
-        e.shoot = 0.48;
+        e.shoot = Math.max(0.26, 0.48 - loopLevel * 0.025);
       }
       bossMeter.value = Math.max(0, e.hp / e.maxHp);
       return;
@@ -335,8 +352,16 @@ function damagePlayer() {
 }
 
 function winGame() {
-  score += 3000;
-  finish("Mission Clear", "The forge fleet is scattered. Your score is locked in.");
+  score += 3000 + loopLevel * 500;
+  loopLevel += 1;
+  nextBossAt = distance + 45;
+  bossSpawned = false;
+  boss = null;
+  enemyBullets = [];
+  enemies = enemies.filter((enemy) => enemy.type !== "boss");
+  powerTimer = Math.min(powerTimer, 1.5);
+  burst(W / 2, 120, "#ffd166", 46);
+  updateHud();
 }
 
 function offerContinue() {
@@ -540,6 +565,7 @@ function updateHud() {
   livesEl.textContent = lives;
   weaponEl.textContent = weapon === "pulse" ? weaponNames[weapon] : `${weaponNames[weapon]} L${weaponLevel}`;
   bossPanel.classList.toggle("is-visible", Boolean(boss && boss.hp > 0));
+  bossPanel.querySelector("span").textContent = `Overseer ${loopLevel}`;
 }
 
 function showOverlay(title, message, button) {
