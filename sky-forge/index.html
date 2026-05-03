@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sky Forge</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <section class="game-card" aria-label="Sky Forge arcade shooter">
+        <header class="hud">
+          <div>
+            <h1>Sky Forge</h1>
+            <p>Move with WASD or arrows. Fire with Space, J, or K.</p>
+          </div>
+          <div class="stats">
+            <div><span>Score</span><strong id="score">0</strong></div>
+            <div><span>Best</span><strong id="best">0</strong></div>
+            <div><span>Lives</span><strong id="lives">3</strong></div>
+            <div><span>Weapon</span><strong id="weapon">Pulse</strong></div>
+          </div>
+        </header>
+
+        <div class="stage-wrap">
+          <canvas id="game" width="720" height="960" aria-label="Game canvas"></canvas>
+          <div class="boss-panel" id="bossPanel">
+            <span>Overseer</span>
+            <meter id="bossMeter" min="0" max="1" value="1"></meter>
+          </div>
+          <div class="overlay is-visible" id="overlay">
+            <strong>Launch Ready</strong>
+            <span>Collect weapon cores: blue spread, violet beam, gold burst.</span>
+            <button id="startBtn" type="button">Start Mission</button>
+          </div>
+        </div>
+
+        <footer class="controls">
+          <button id="pauseBtn" type="button" aria-label="Pause">Pause</button>
+          <button id="restartBtn" type="button" aria-label="Restart">Restart</button>
+          <div class="touch-pad" aria-label="Touch movement controls">
+            <button data-key="ArrowUp" type="button">Up</button>
+            <button data-key="ArrowLeft" type="button">Left</button>
+            <button data-key="Space" type="button">Fire</button>
+            <button data-key="ArrowRight" type="button">Right</button>
+            <button data-key="ArrowDown" type="button">Down</button>
+          </div>
+        </footer>
+      </section>
+    </main>
+
+    <script src="./game.js"></script>
+  </body>
+</html>

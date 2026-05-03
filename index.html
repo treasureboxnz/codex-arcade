@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Codex Arcade</title>
+    <link rel="stylesheet" href="./portal.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="./" aria-label="Codex Arcade home">
+        <span class="brand-mark">CA</span>
+        <span>
+          <strong>Codex Arcade</strong>
+          <em>Play · Code · Share</em>
+        </span>
+      </a>
+      <nav aria-label="Main navigation">
+        <a href="#games">Games</a>
+        <a href="#about">About</a>
+        <a href="#deploy">Deploy</a>
+      </nav>
+      <a class="ghost-button" href="https://github.com/" target="_blank" rel="noreferrer">GitHub</a>
+    </header>
+
+    <main>
+      <section class="hero" id="about">
+        <div class="intro">
+          <p class="label">Welcome</p>
+          <h1>Original browser games, ready to play and share.</h1>
+          <p>
+            A growing collection of small web games built with HTML, CSS, and JavaScript.
+            Each game runs directly in the browser with no install required.
+          </p>
+        </div>
+
+        <div class="feature-list" aria-label="Project highlights">
+          <div>
+            <span>01</span>
+            <strong>Original Games</strong>
+            <p>Snake and arcade shooter concepts built from scratch.</p>
+          </div>
+          <div>
+            <span>02</span>
+            <strong>Static Web Tech</strong>
+            <p>Easy to host on GitHub Pages, Vercel, Netlify, or any static server.</p>
+          </div>
+          <div>
+            <span>03</span>
+            <strong>Free to Play</strong>
+            <p>Designed as a public game shelf that can keep growing over time.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="games-section" id="games">
+        <div class="section-heading">
+          <p class="label">Featured Games</p>
+          <h2>Choose a mission</h2>
+        </div>
+
+        <div class="game-grid">
+          <article class="game-card snake">
+            <div class="preview snake-preview" aria-hidden="true">
+              <div class="snake-grid">
+                <span class="snake-bit b1"></span>
+                <span class="snake-bit b2"></span>
+                <span class="snake-bit b3"></span>
+                <span class="snake-bit b4"></span>
+                <span class="snake-bit b5"></span>
+                <span class="apple"></span>
+              </div>
+            </div>
+            <div class="game-body">
+              <div>
+                <h3>Neon Snake</h3>
+                <p>Classic grid movement, score chasing, speed selection, pause, restart, and touch controls.</p>
+              </div>
+              <div class="tags">
+                <span>Snake</span>
+                <span>Keyboard</span>
+                <span>Retro</span>
+              </div>
+              <a class="play-button" href="./snake-game/">Play Now</a>
+            </div>
+          </article>
+
+          <article class="game-card forge">
+            <div class="preview forge-preview" aria-hidden="true">
+              <span class="enemy e1"></span>
+              <span class="enemy e2"></span>
+              <span class="enemy e3"></span>
+              <span class="shot s1"></span>
+              <span class="shot s2"></span>
+              <span class="shot s3"></span>
+              <span class="ship"></span>
+              <span class="core"></span>
+            </div>
+            <div class="game-body">
+              <div>
+                <h3>Sky Forge</h3>
+                <p>Vertical shooter with lives, continue, boss fights, power-ups, and five weapon modes.</p>
+              </div>
+              <div class="tags">
+                <span>Shooter</span>
+                <span>Power-ups</span>
+                <span>Boss</span>
+              </div>
+              <a class="play-button blue" href="./sky-forge/">Play Now</a>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="deploy-panel" id="deploy">
+        <div>
+          <p class="label">Deployment Ready</p>
+          <h2>One static site, many hosting options.</h2>
+          <p>
+            This folder can become a GitHub repository. After publishing, it can be hosted with
+            GitHub Pages or connected to a server/domain later.
+          </p>
+        </div>
+        <div class="deploy-actions">
+          <code>git init</code>
+          <code>git remote add origin ...</code>
+          <code>git push -u origin main</code>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

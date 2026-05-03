@@ -1,0 +1,241 @@
+:root {
+  color-scheme: dark;
+  --bg: #060916;
+  --panel: rgba(10, 18, 36, 0.88);
+  --line: rgba(84, 226, 255, 0.28);
+  --text: #e9fbff;
+  --muted: #91b7c4;
+  --cyan: #45e8ff;
+  --violet: #a977ff;
+  --gold: #ffd166;
+  --danger: #ff4d6d;
+  --green: #54ffa3;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(circle at 16% 8%, rgba(69, 232, 255, 0.16), transparent 28rem),
+    radial-gradient(circle at 88% 20%, rgba(169, 119, 255, 0.16), transparent 24rem),
+    linear-gradient(135deg, #050712 0%, #091120 48%, #070914 100%);
+  color: var(--text);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+button {
+  font: inherit;
+}
+
+.shell {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.game-card {
+  width: min(1180px, 100%);
+}
+
+.hud {
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) minmax(480px, 660px);
+  gap: 20px;
+  align-items: end;
+  margin-bottom: 14px;
+}
+
+h1 {
+  margin: 0;
+  font-size: clamp(2.3rem, 6vw, 5.4rem);
+  line-height: 0.92;
+  letter-spacing: 0;
+}
+
+p {
+  margin: 10px 0 0;
+  color: var(--muted);
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.stats div,
+.controls,
+.boss-panel {
+  border: 1px solid var(--line);
+  background: var(--panel);
+  box-shadow: 0 20px 64px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(12px);
+}
+
+.stats div {
+  min-height: 74px;
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.stats span,
+.boss-panel span {
+  display: block;
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
+.stats strong {
+  display: block;
+  margin-top: 5px;
+  color: var(--text);
+  font-size: clamp(1.2rem, 3vw, 2rem);
+  line-height: 1;
+}
+
+.stage-wrap {
+  position: relative;
+  width: min(100%, calc((100vh - 250px) * 0.75));
+  min-width: min(100%, 330px);
+  aspect-ratio: 3 / 4;
+  margin: 0 auto;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #061022;
+  box-shadow:
+    0 28px 90px rgba(0, 0, 0, 0.48),
+    inset 0 0 0 1px rgba(69, 232, 255, 0.1);
+}
+
+canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.boss-panel {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  right: 14px;
+  display: none;
+  gap: 10px;
+  align-items: center;
+  padding: 10px 12px;
+  border-radius: 8px;
+}
+
+.boss-panel.is-visible {
+  display: grid;
+  grid-template-columns: 92px 1fr;
+}
+
+meter {
+  width: 100%;
+  height: 12px;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: none;
+  place-items: center;
+  align-content: center;
+  gap: 14px;
+  padding: 30px;
+  background: rgba(3, 7, 16, 0.74);
+  text-align: center;
+}
+
+.overlay.is-visible {
+  display: grid;
+}
+
+.overlay strong {
+  font-size: clamp(2rem, 7vw, 4.8rem);
+  line-height: 1;
+}
+
+.overlay span {
+  max-width: 390px;
+  color: var(--muted);
+}
+
+button {
+  min-height: 44px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(13, 27, 52, 0.92);
+  color: var(--text);
+  cursor: pointer;
+  font-weight: 850;
+}
+
+button:hover {
+  border-color: var(--cyan);
+  color: var(--cyan);
+}
+
+#startBtn {
+  min-width: 170px;
+  border: 0;
+  background: linear-gradient(135deg, var(--cyan), var(--green));
+  color: #04111a;
+}
+
+.controls {
+  display: grid;
+  grid-template-columns: 120px 120px 1fr;
+  gap: 10px;
+  align-items: center;
+  margin: 14px auto 0;
+  padding: 12px;
+  border-radius: 8px;
+  width: min(720px, 100%);
+}
+
+.touch-pad {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(56px, 1fr));
+  gap: 8px;
+}
+
+@media (max-width: 860px) {
+  .shell {
+    padding: 14px;
+    place-items: start center;
+  }
+
+  .hud {
+    grid-template-columns: 1fr;
+  }
+
+  .stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .stage-wrap {
+    width: min(100%, 520px);
+  }
+
+  .controls {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .touch-pad {
+    grid-column: 1 / -1;
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

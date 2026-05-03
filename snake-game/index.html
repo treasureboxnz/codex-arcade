@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Neon Snake</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="game-stage" aria-label="Snake game">
+        <div class="top-bar">
+          <div>
+            <h1>Neon Snake</h1>
+            <p>Arrow keys or WASD to steer. Space pauses.</p>
+          </div>
+          <div class="status-pill" id="statusText">Ready</div>
+        </div>
+
+        <div class="play-layout">
+          <div class="board-wrap">
+            <canvas id="gameCanvas" width="640" height="640" aria-label="Snake board"></canvas>
+            <div class="overlay is-visible" id="startOverlay">
+              <strong>Press Start</strong>
+              <span>Eat apples, grow longer, avoid walls and yourself.</span>
+            </div>
+          </div>
+
+          <aside class="control-panel" aria-label="Game controls">
+            <div class="score-grid">
+              <div>
+                <span>Score</span>
+                <strong id="scoreValue">0</strong>
+              </div>
+              <div>
+                <span>Best</span>
+                <strong id="bestValue">0</strong>
+              </div>
+            </div>
+
+            <label class="field">
+              <span>Speed</span>
+              <select id="speedSelect">
+                <option value="150">Chill</option>
+                <option value="110" selected>Classic</option>
+                <option value="80">Rush</option>
+              </select>
+            </label>
+
+            <div class="button-row">
+              <button id="startButton" class="primary-button" type="button">Start</button>
+              <button id="pauseButton" class="icon-button" type="button" aria-label="Pause">II</button>
+              <button id="restartButton" class="icon-button" type="button" aria-label="Restart">R</button>
+            </div>
+
+            <div class="guide">
+              <span>Keys</span>
+              <kbd>&uarr;</kbd><kbd>&darr;</kbd><kbd>&larr;</kbd><kbd>&rarr;</kbd>
+              <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd>
+            </div>
+
+            <div class="dpad" aria-label="Touch controls">
+              <button data-dir="up" aria-label="Move up">&uarr;</button>
+              <button data-dir="left" aria-label="Move left">&larr;</button>
+              <button data-dir="right" aria-label="Move right">&rarr;</button>
+              <button data-dir="down" aria-label="Move down">&darr;</button>
+            </div>
+          </aside>
+        </div>
+      </section>
+    </main>
+
+    <script src="./game.js"></script>
+  </body>
+</html>
