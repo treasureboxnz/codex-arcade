@@ -24,6 +24,7 @@ let timer = null;
 let running = false;
 let paused = false;
 let gameOver = false;
+let awaitingContinue = false;
 
 const directions = {
   up: { x: 0, y: -1 },
@@ -43,12 +44,17 @@ function resetGame() {
   score = 0;
   paused = false;
   gameOver = false;
+  awaitingContinue = false;
   apple = createApple();
   updateHud("Ready");
   draw();
 }
 
 function startGame() {
+  if (awaitingContinue) {
+    continueGame();
+    return;
+  }
   if (running && !gameOver) return;
   running = true;
   paused = false;
@@ -72,10 +78,12 @@ function restartGame() {
   clearInterval(timer);
   timer = null;
   running = false;
+  awaitingContinue = false;
   resetGame();
   startOverlay.classList.add("is-visible");
   startOverlay.querySelector("strong").textContent = "Press Start";
   startOverlay.querySelector("span").textContent = "Eat apples, grow longer, avoid walls and yourself.";
+  startButton.textContent = "Start";
 }
 
 function step() {
@@ -110,12 +118,35 @@ function step() {
 function endGame() {
   running = false;
   gameOver = true;
+  awaitingContinue = true;
   clearInterval(timer);
   timer = null;
-  updateHud("Game Over");
+  updateHud("Continue?");
   startOverlay.classList.add("is-visible");
-  startOverlay.querySelector("strong").textContent = "Game Over";
-  startOverlay.querySelector("span").textContent = "Restart to try another run.";
+  startOverlay.querySelector("strong").textContent = "Continue?";
+  startOverlay.querySelector("span").textContent = "Keep your score and respawn from a safe lane.";
+  startButton.textContent = "Continue";
+}
+
+function continueGame() {
+  snake = [
+    { x: 10, y: 12 },
+    { x: 9, y: 12 },
+    { x: 8, y: 12 },
+  ];
+  direction = directions.right;
+  queuedDirection = directions.right;
+  apple = createApple();
+  awaitingContinue = false;
+  gameOver = false;
+  running = true;
+  paused = false;
+  startButton.textContent = "Start";
+  startOverlay.classList.remove("is-visible");
+  updateHud("Playing");
+  draw();
+  clearInterval(timer);
+  timer = setInterval(step, Number(speedSelect.value));
 }
 
 function createApple() {
@@ -224,6 +255,10 @@ document.addEventListener("keydown", (event) => {
 
   if (event.code === "Space") {
     event.preventDefault();
+    if (awaitingContinue) {
+      continueGame();
+      return;
+    }
     pauseGame();
     return;
   }
@@ -231,7 +266,7 @@ document.addEventListener("keydown", (event) => {
   if (keyMap[event.key]) {
     event.preventDefault();
     setDirection(keyMap[event.key]);
-    if (!running && !gameOver) startGame();
+    if (!running && (!gameOver || awaitingContinue)) startGame();
   }
 });
 
@@ -248,7 +283,7 @@ speedSelect.addEventListener("change", () => {
 dpadButtons.forEach((button) => {
   button.addEventListener("click", () => {
     setDirection(button.dataset.dir);
-    if (!running && !gameOver) startGame();
+    if (!running && (!gameOver || awaitingContinue)) startGame();
   });
 });
 
