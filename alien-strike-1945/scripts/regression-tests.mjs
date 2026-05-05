@@ -74,6 +74,26 @@ assert(
   "Bomb pickups must cap bombs at exactly 5.",
 );
 
+assert(
+  source.includes("PLAYER_LIVES = 100") &&
+    /private lives = PLAYER_LIVES/.test(source) &&
+    /this\.lives = PLAYER_LIVES/.test(source),
+  "Player must start and continue with 100 lives.",
+);
+
+assert(
+  source.includes("ENEMY_BULLET_SPEED_DEFAULT = 165") &&
+    source.includes("ENEMY_BOSS_FIRE_DELAY = 900") &&
+    /kind === "boss" \? \[-0\.28, 0, 0\.28\]/.test(source),
+  "Enemy bullets must be slower and boss spreads must leave dodge gaps.",
+);
+
+assert(
+  /enemy\.setData\("shootAt", time \+ this\.enemyFireDelay\(kind\)\)/.test(source) &&
+    source.includes("private enemyFireDelay(kind: string): number"),
+  "Enemy fire cadence must use a slower difficulty-tuned delay helper.",
+);
+
 for (const behavior of ["pierceRemaining", "findClosestEnemy", "blastRadius", "wavePhase"]) {
   assert(source.includes(behavior), `Bullet behavior ${behavior} must be implemented.`);
 }

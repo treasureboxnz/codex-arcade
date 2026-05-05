@@ -16,7 +16,7 @@ Current status: playable prototype.
 - Campaign target: 15 stages in the full version.
 - Full clear target: about 2 hours.
 - Theme: alien battlefield with airborne enemies and ground monsters.
-- Lives: 10 lives per run, with a continue flow after game over.
+- Lives: 100 lives per run, with a continue flow after game over.
 - Platform: web game built with Phaser and Vite, friendly for desktop and phone.
 
 ## Controls
@@ -86,6 +86,7 @@ Enemy design direction:
 
 - Later stages should increase projectile density, attack paths, health, and
   coordination between air and ground enemies.
+- Enemy bullet patterns should leave visible dodge gaps, especially on mobile.
 - Ground enemies should encourage bomb usage without forcing the player to stop
   focusing on air threats.
 

@@ -1,7 +1,7 @@
 # Alien Strike 1945
 
 Mobile-first vertical shooter prototype with twin virtual sticks, alien waves,
-weapon upgrades, fuel overdrive, bombs, lives, score, kills, and a demo boss.
+weapon upgrades, fuel overdrive, bombs, 100 lives, score, kills, and a demo boss.
 
 ## Run
 
@@ -20,6 +20,7 @@ Production: https://alien-strike-1945.vercel.app
 - Right virtual stick: hold to fire and aim.
 - Upper-right bomb button: bomb strike.
 - Fuel pickups trigger a short overdrive burst.
+- Enemy bullets are tuned to leave visible dodge gaps.
 - Desktop fallback: WASD or arrow keys move, Space fires.
 
 ## Current Weapon Rules

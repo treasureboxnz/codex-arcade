@@ -4,6 +4,12 @@ import "./styles.css";
 const GAME_WIDTH = 540;
 const GAME_HEIGHT = 960;
 const BOMB_MAX = 5;
+const PLAYER_LIVES = 100;
+const ENEMY_BULLET_SPEED_DEFAULT = 165;
+const ENEMY_BULLET_SPEED_FAST = 185;
+const ENEMY_BULLET_SPEED_GROUND = 170;
+const ENEMY_BULLET_SPEED_BOSS = 190;
+const ENEMY_BOSS_FIRE_DELAY = 900;
 
 const clamp = Phaser.Math.Clamp;
 
@@ -62,7 +68,7 @@ class AlienStrikeScene extends Phaser.Scene {
   private score = 0;
   private shownScore = 0;
   private kills = 0;
-  private lives = 10;
+  private lives = PLAYER_LIVES;
   private continues = 0;
   private bombs = 3;
   private currentWeapon: WeaponType = "pulse";
@@ -111,8 +117,8 @@ class AlienStrikeScene extends Phaser.Scene {
     this.registerInput();
 
     this.stageStart = this.time.now;
-    this.nextEnemyAt = this.time.now + 700;
-    this.nextGroundAt = this.time.now + 2500;
+    this.nextEnemyAt = this.time.now + 950;
+    this.nextGroundAt = this.time.now + 3200;
 
     this.physics.add.overlap(this.bullets, this.enemies, this.onBulletHitsEnemy, undefined, this);
     this.physics.add.overlap(this.player, this.enemyBullets, this.onPlayerHit, undefined, this);
@@ -579,7 +585,7 @@ class AlienStrikeScene extends Phaser.Scene {
 
     this.scoreText = this.add.text(20, 16, "SCORE 0000000", hudStyle).setDepth(80);
     this.killsText = this.add.text(20, 42, "KILLS 0", smallStyle).setDepth(80);
-    this.livesText = this.add.text(GAME_WIDTH - 20, 16, "LIVES 10", hudStyle).setOrigin(1, 0).setDepth(80);
+    this.livesText = this.add.text(GAME_WIDTH - 20, 16, `LIVES ${PLAYER_LIVES}`, hudStyle).setOrigin(1, 0).setDepth(80);
     this.weaponText = this.add.text(GAME_WIDTH - 20, 42, "PULSE 1", smallStyle).setOrigin(1, 0).setDepth(80);
     this.bombsText = this.add.text(GAME_WIDTH - 20, 68, "BOMBS 3", smallStyle).setOrigin(1, 0).setDepth(80);
     this.progressText = this.add.text(GAME_WIDTH / 2, 18, "WAVE 1", smallStyle).setOrigin(0.5, 0).setDepth(80);
@@ -608,7 +614,7 @@ class AlienStrikeScene extends Phaser.Scene {
       stroke: "#06111d",
       strokeThickness: 4,
     }).setOrigin(0.5);
-    const note = this.add.text(0, 52, "10 lives restored", {
+    const note = this.add.text(0, 52, `${PLAYER_LIVES} lives restored`, {
       fontFamily: "Inter, Arial, sans-serif",
       fontSize: "13px",
       color: "#b8d7e8",
@@ -1055,12 +1061,12 @@ class AlienStrikeScene extends Phaser.Scene {
 
     if (time > this.nextEnemyAt && !this.bossDefeated) {
       this.spawnEnemy(difficulty);
-      this.nextEnemyAt = time + Phaser.Math.Between(520, Math.max(860, 1320 - difficulty * 550));
+      this.nextEnemyAt = time + Phaser.Math.Between(780, Math.max(1200, 1800 - difficulty * 380));
     }
 
     if (time > this.nextGroundAt && !this.bossDefeated) {
       this.spawnGroundBeast(difficulty);
-      this.nextGroundAt = time + Phaser.Math.Between(2400, Math.max(3200, 4400 - difficulty * 900));
+      this.nextGroundAt = time + Phaser.Math.Between(3300, Math.max(4200, 5600 - difficulty * 800));
     }
 
     if (!this.bossSpawned && elapsed > 68000) {
@@ -1113,7 +1119,7 @@ class AlienStrikeScene extends Phaser.Scene {
       speed: Phaser.Math.Between(78, key === "enemyCruiser" ? 112 : 152) + difficulty * 46,
       drift: Phaser.Math.FloatBetween(-1.7, 1.7),
       born: this.time.now,
-      shootAt: this.time.now + Phaser.Math.Between(900, 1700),
+      shootAt: this.time.now + Phaser.Math.Between(1700, 3000),
       kind: "air",
       pattern: key,
     });
@@ -1145,7 +1151,7 @@ class AlienStrikeScene extends Phaser.Scene {
       speed: 62 + difficulty * 32,
       drift: Phaser.Math.FloatBetween(-0.55, 0.55),
       born: this.time.now,
-      shootAt: this.time.now + Phaser.Math.Between(1200, 2100),
+      shootAt: this.time.now + Phaser.Math.Between(2300, 4200),
       kind: "ground",
       pattern: key,
     });
@@ -1169,7 +1175,7 @@ class AlienStrikeScene extends Phaser.Scene {
       speed: 38,
       drift: 1,
       born: this.time.now,
-      shootAt: this.time.now + 600,
+      shootAt: this.time.now + 1000,
       kind: "boss",
     });
 
@@ -1201,7 +1207,7 @@ class AlienStrikeScene extends Phaser.Scene {
 
       if (time > Number(enemy.getData("shootAt"))) {
         this.enemyShoot(enemy, kind);
-        enemy.setData("shootAt", time + (kind === "boss" ? 420 : Phaser.Math.Between(1050, 2100)));
+        enemy.setData("shootAt", time + this.enemyFireDelay(kind));
       }
 
       if (enemy.y > GAME_HEIGHT + 95) {
@@ -1215,13 +1221,13 @@ class AlienStrikeScene extends Phaser.Scene {
     const aim = new Phaser.Math.Vector2(this.player.x - enemy.x, this.player.y - enemy.y).normalize();
     const pattern = (enemy.getData("pattern") as string | undefined) ?? kind;
     const shots =
-      kind === "boss" ? [-0.45, -0.22, 0, 0.22, 0.45] :
-      pattern === "enemyCruiser" ? [-0.34, 0, 0.34] :
-      pattern === "enemyStingray" ? [-0.22, 0.22] :
-      pattern === "enemyOrbiter" ? [-0.14, 0.14] :
-      pattern === "groundTurret" ? [-0.3, 0, 0.3] :
-      pattern === "groundCrawler" ? [-0.18, 0.18] :
-      kind === "ground" ? [-0.18, 0.18] :
+      kind === "boss" ? [-0.28, 0, 0.28] :
+      pattern === "enemyCruiser" ? [-0.2, 0.2] :
+      pattern === "enemyStingray" ? [0] :
+      pattern === "enemyOrbiter" ? [0] :
+      pattern === "groundTurret" ? [-0.18, 0.18] :
+      pattern === "groundCrawler" ? [0] :
+      kind === "ground" ? [0] :
       [0];
 
     for (const rotation of shots) {
@@ -1235,9 +1241,23 @@ class AlienStrikeScene extends Phaser.Scene {
       }
       bullet.setScale(kind === "boss" || pattern === "enemyCruiser" ? 1.2 : pattern === "enemyOrbiter" ? 0.82 : 0.95);
       bullet.setBlendMode(Phaser.BlendModes.ADD);
-      const speed = pattern === "enemyOrbiter" ? 285 : pattern === "groundTurret" ? 255 : 235;
+      const speed =
+        kind === "boss" ? ENEMY_BULLET_SPEED_BOSS :
+        pattern === "enemyOrbiter" ? ENEMY_BULLET_SPEED_FAST :
+        kind === "ground" ? ENEMY_BULLET_SPEED_GROUND :
+        ENEMY_BULLET_SPEED_DEFAULT;
       bullet.setVelocity(direction.x * speed, direction.y * speed);
     }
+  }
+
+  private enemyFireDelay(kind: string): number {
+    if (kind === "boss") {
+      return ENEMY_BOSS_FIRE_DELAY;
+    }
+    if (kind === "ground") {
+      return Phaser.Math.Between(2600, 4300);
+    }
+    return Phaser.Math.Between(1800, 3300);
   }
 
   private updateEnemyBullets(): void {
@@ -1542,7 +1562,7 @@ class AlienStrikeScene extends Phaser.Scene {
 
     this.gameOver = false;
     this.continues += 1;
-    this.lives = 10;
+    this.lives = PLAYER_LIVES;
     this.score = Math.max(0, this.score - 1500);
     this.player.setActive(true).setVisible(true).setAlpha(1).setPosition(GAME_WIDTH / 2, GAME_HEIGHT - 185);
     if (this.player.body) {
@@ -1550,8 +1570,8 @@ class AlienStrikeScene extends Phaser.Scene {
       this.player.body.reset(this.player.x, this.player.y);
     }
     this.invulnerableUntil = this.time.now + 2400;
-    this.nextEnemyAt = this.time.now + 900;
-    this.nextGroundAt = this.time.now + 2600;
+    this.nextEnemyAt = this.time.now + 1200;
+    this.nextGroundAt = this.time.now + 3600;
     this.nextShotAt = this.time.now + 250;
     this.gameOverLayer.setVisible(false);
     this.flashBanner("CONTINUE " + this.continues);
