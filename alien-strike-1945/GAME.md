@@ -22,7 +22,8 @@ Current status: playable prototype.
 ## Controls
 
 - Mobile movement: left virtual joystick.
-- Mobile fire and aim: smaller right virtual joystick.
+- Mobile fire and aim: smaller right virtual joystick. It fires upward by
+  default, with left/right drag steering the shot angle.
 - Bomb: separate upper-right bomb button.
 - Desktop movement: arrow keys or WASD.
 - Desktop fire: Space.

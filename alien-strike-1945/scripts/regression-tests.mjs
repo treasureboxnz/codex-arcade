@@ -94,6 +94,19 @@ assert(
   "Enemy fire cadence must use a slower difficulty-tuned delay helper.",
 );
 
+assert(
+  source.includes("private getFireDirection(): Phaser.Math.Vector2") &&
+    /const aim = this\.getFireDirection\(\);/.test(source),
+  "Mobile firing must use a dedicated fire-direction helper.",
+);
+
+assert(
+  source.includes("MOBILE_FIRE_X_WEIGHT = 0.7") &&
+    source.includes("new Phaser.Math.Vector2(horizontal * MOBILE_FIRE_X_WEIGHT, -1).normalize()") &&
+    !source.includes("this.rightStick.vector.clone().normalize()"),
+  "Mobile right-stick fire must always shoot upward, with horizontal drag only steering the angle.",
+);
+
 for (const behavior of ["pierceRemaining", "findClosestEnemy", "blastRadius", "wavePhase"]) {
   assert(source.includes(behavior), `Bullet behavior ${behavior} must be implemented.`);
 }

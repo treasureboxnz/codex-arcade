@@ -17,7 +17,7 @@ Production: https://alien-strike-1945.vercel.app
 ## Controls
 
 - Left virtual stick: move.
-- Right virtual stick: hold to fire and aim.
+- Right virtual stick: hold to fire; drag left or right to angle upward shots.
 - Upper-right bomb button: bomb strike.
 - Fuel pickups trigger a short overdrive burst.
 - Enemy bullets are tuned to leave visible dodge gaps.

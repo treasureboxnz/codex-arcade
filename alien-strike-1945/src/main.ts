@@ -10,6 +10,7 @@ const ENEMY_BULLET_SPEED_FAST = 185;
 const ENEMY_BULLET_SPEED_GROUND = 170;
 const ENEMY_BULLET_SPEED_BOSS = 190;
 const ENEMY_BOSS_FIRE_DELAY = 900;
+const MOBILE_FIRE_X_WEIGHT = 0.7;
 
 const clamp = Phaser.Math.Clamp;
 
@@ -937,17 +938,18 @@ class AlienStrikeScene extends Phaser.Scene {
     const interval = overdrive ? Math.max(58, weaponDelay[this.currentWeapon] * 0.52) : Math.max(78, weaponDelay[this.currentWeapon] - this.weaponLevel * 12);
     this.nextShotAt = time + interval;
 
-    const aim = this.rightStick.active && this.rightStick.vector.lengthSq() > 0.05
-      ? this.rightStick.vector.clone().normalize()
-      : new Phaser.Math.Vector2(0, -1);
-
-    if (aim.y > 0.35) {
-      aim.y = -0.45;
-      aim.normalize();
-    }
-
+    const aim = this.getFireDirection();
     const level = overdrive ? Math.min(6, this.weaponLevel + 2) : this.weaponLevel;
     this.firePattern(aim, level, overdrive);
+  }
+
+  private getFireDirection(): Phaser.Math.Vector2 {
+    if (!this.rightStick.active || this.rightStick.vector.lengthSq() <= 0.05) {
+      return new Phaser.Math.Vector2(0, -1);
+    }
+
+    const horizontal = clamp(this.rightStick.vector.x, -1, 1);
+    return new Phaser.Math.Vector2(horizontal * MOBILE_FIRE_X_WEIGHT, -1).normalize();
   }
 
   private firePattern(direction: Phaser.Math.Vector2, level: number, overdrive: boolean): void {
