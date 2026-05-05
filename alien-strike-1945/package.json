@@ -1,0 +1,24 @@
+{
+  "name": "alien-strike-1945",
+  "version": "1.0.0",
+  "description": "Alien vertical shooter prototype inspired by 1945-style arcade games.",
+  "private": true,
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "build": "tsc && vite build",
+    "preview": "vite preview --host 0.0.0.0",
+    "test": "node scripts/regression-tests.mjs"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "devDependencies": {
+    "typescript": "^6.0.3",
+    "vite": "^8.0.10"
+  },
+  "dependencies": {
+    "phaser": "^3.90.0"
+  }
+}

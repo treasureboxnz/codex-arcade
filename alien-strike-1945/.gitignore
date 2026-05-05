@@ -1,0 +1,7 @@
+dist/
+.vercel/
+.edge-profile*/
+qa/
+*.log
+
+.vercel
