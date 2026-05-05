@@ -15,6 +15,8 @@ Open `http://localhost:4177`.
 
 Production: https://alien-strike-1945.vercel.app
 
+Project learnings and recurring QA pitfalls are tracked in `LEARNINGS.md`.
+
 ## Controls
 
 - Left virtual stick: move.
