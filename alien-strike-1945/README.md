@@ -2,6 +2,7 @@
 
 Mobile-first vertical shooter prototype with twin virtual sticks, alien waves,
 weapon upgrades, fuel overdrive, bombs, 100 lives, score, kills, and a demo boss.
+Elite enemies can drop Mega Rounds, a longer-lasting big-bullet reward.
 
 ## Run
 
@@ -30,3 +31,5 @@ Production: https://alien-strike-1945.vercel.app
 - Picking up a different weapon switches weapon type and resets it to level 1.
 - Bomb pickups cap at 5 bombs.
 - Fuel pickups trigger Overdrive, temporarily strengthening fire rate, damage, and movement.
+- Elite Viper and Warden enemies drop Mega Rounds.
+- Mega Rounds last 24 seconds, enlarge bullets, and add damage.

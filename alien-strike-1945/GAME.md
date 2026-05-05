@@ -33,10 +33,11 @@ Current status: playable prototype.
 1. Move through vertical alien attack waves.
 2. Destroy air enemies and ground monsters.
 3. Collect score, weapon pickups, bombs, and fuel.
-4. Upgrade the current weapon or switch to a new weapon type.
-5. Use bombs for screen-clearing damage.
-6. Use fuel overdrive for short bursts of stronger fire rate, damage, and speed.
-7. Survive until the stage or boss wave is cleared.
+4. Hunt elite enemies for Mega Rounds, a longer-lasting big-bullet reward.
+5. Upgrade the current weapon or switch to a new weapon type.
+6. Use bombs for screen-clearing damage.
+7. Use fuel overdrive for short bursts of stronger fire rate, damage, and speed.
+8. Survive until the stage or boss wave is cleared.
 
 ## Weapon System
 
@@ -59,6 +60,13 @@ Weapon pickup rules:
 - Different weapon pickup: switches weapon type and resets the weapon to level 1.
 - Fuel pickup: starts overdrive instead of being treated as a permanent weapon.
 
+Mega Rounds:
+
+- Dropped by elite Viper and Warden enemies.
+- Last 24 seconds by default and can extend up to 48 seconds.
+- Enlarge all player bullets.
+- Add extra damage to each shot.
+
 ## Bombs And Fuel
 
 - Bomb type: one standard bomb type.
@@ -76,6 +84,8 @@ Air enemies:
 - Orbiter drone.
 - Stingray attacker.
 - Cruiser heavy unit.
+- Viper elite.
+- Warden elite.
 
 Ground enemies:
 
@@ -102,6 +112,7 @@ The game tracks:
 - Current weapon.
 - Weapon level.
 - Overdrive state.
+- Mega Rounds state.
 
 Score feedback should keep moving and updating quickly so each kill feels
 visible and rewarding.

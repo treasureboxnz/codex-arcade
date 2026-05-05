@@ -38,7 +38,7 @@ assert(
   "recycleSprite must disable the Arcade body so hidden enemies stop colliding.",
 );
 
-for (const method of ["spawnBullet", "spawnEnemy", "spawnGroundBeast", "spawnBoss", "enemyShoot", "maybeDropPickup"]) {
+for (const method of ["spawnBullet", "spawnEnemy", "spawnGroundBeast", "spawnBoss", "enemyShoot", "maybeDropPickup", "dropMegaPickup"]) {
   const match = source.match(new RegExp(`private ${method}\\([\\s\\S]*?\\n  \\}`));
   assert(match?.[0].includes("body.enable = true"), `${method} must re-enable bodies when pooled objects are reused.`);
 }
@@ -116,7 +116,39 @@ assert(
   "Fuel pickups must clearly trigger the overdrive special function.",
 );
 
-for (const enemyTexture of ["enemyOrbiter", "enemyStingray", "enemyCruiser", "groundTurret", "groundCrawler"]) {
+assert(
+  source.includes('type PickupKind = "weapon" | "fuel" | "bomb" | "mega"') &&
+    source.includes("MEGA_ROUNDS_DURATION = 24000") &&
+    source.includes("MEGA_ROUNDS_SCALE = 1.55") &&
+    source.includes("MEGA_ROUNDS_DAMAGE_BONUS = 1"),
+  "Elite rewards must add a long-duration mega-rounds pickup that makes bullets bigger and stronger.",
+);
+
+assert(
+  source.includes("private megaRoundsUntil = 0") &&
+    source.includes("private startMegaRounds") &&
+    source.includes("private isMegaRounds(time: number): boolean"),
+  "Mega rounds must have a dedicated timed state.",
+);
+
+assert(
+    source.includes('"enemyViper"') &&
+    source.includes('"enemyWarden"') &&
+    source.includes('"pickupMega"') &&
+    source.includes('kind: elite ? "elite" : "air"') &&
+    /this\.dropMegaPickup\(enemy\.x, enemy\.y\)/.test(source),
+  "Elite small monsters must exist and drop guaranteed mega-round rewards when killed.",
+);
+
+assert(
+  /const megaRounds = this\.isMegaRounds\(this\.time\.now\)/.test(source) &&
+    source.includes("damage + MEGA_ROUNDS_DAMAGE_BONUS") &&
+    source.includes("MEGA_ROUNDS_SCALE") &&
+    source.includes('this.flashBanner("MEGA ROUNDS")'),
+  "Mega rounds must visibly enlarge bullets and increase their damage while active.",
+);
+
+for (const enemyTexture of ["enemyOrbiter", "enemyStingray", "enemyCruiser", "enemyViper", "enemyWarden", "groundTurret", "groundCrawler"]) {
   assert(source.includes(`"${enemyTexture}"`), `Enemy variety texture ${enemyTexture} must exist.`);
 }
 

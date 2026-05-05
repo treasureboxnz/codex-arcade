@@ -11,11 +11,15 @@ const ENEMY_BULLET_SPEED_GROUND = 170;
 const ENEMY_BULLET_SPEED_BOSS = 190;
 const ENEMY_BOSS_FIRE_DELAY = 900;
 const MOBILE_FIRE_X_WEIGHT = 0.7;
+const MEGA_ROUNDS_DURATION = 24000;
+const MEGA_ROUNDS_MAX = 48000;
+const MEGA_ROUNDS_SCALE = 1.55;
+const MEGA_ROUNDS_DAMAGE_BONUS = 1;
 
 const clamp = Phaser.Math.Clamp;
 
 type WeaponType = "pulse" | "pierce" | "laser" | "homing" | "explosive" | "wave";
-type PickupKind = "weapon" | "fuel" | "bomb";
+type PickupKind = "weapon" | "fuel" | "bomb" | "mega";
 type ArcadeOverlapObject =
   | Phaser.Types.Physics.Arcade.GameObjectWithBody
   | Phaser.Physics.Arcade.Body
@@ -75,6 +79,7 @@ class AlienStrikeScene extends Phaser.Scene {
   private currentWeapon: WeaponType = "pulse";
   private weaponLevel = 1;
   private overdriveUntil = 0;
+  private megaRoundsUntil = 0;
   private invulnerableUntil = 0;
   private stageStart = 0;
   private gameOver = false;
@@ -328,6 +333,51 @@ class AlienStrikeScene extends Phaser.Scene {
     g.generateTexture("enemyCruiser", 112, 100);
 
     g.clear();
+    g.fillStyle(0xfff173, 0.16);
+    g.fillEllipse(42, 44, 82, 74);
+    g.fillGradientStyle(0xfff173, 0xff4fec, 0x5cffff, 0x20226f, 1, 1, 1, 1);
+    g.beginPath();
+    g.moveTo(42, 1);
+    g.lineTo(78, 38);
+    g.lineTo(61, 84);
+    g.lineTo(42, 66);
+    g.lineTo(23, 84);
+    g.lineTo(6, 38);
+    g.closePath();
+    g.fillPath();
+    g.lineStyle(3, 0xfff173, 0.95);
+    g.strokePath();
+    g.fillStyle(0x07111f, 0.78);
+    g.fillEllipse(42, 36, 28, 18);
+    g.fillStyle(0x30ffbd, 1);
+    g.fillCircle(34, 36, 4);
+    g.fillCircle(50, 36, 4);
+    g.lineStyle(2, 0xffffff, 0.72);
+    g.lineBetween(18, 53, 6, 72);
+    g.lineBetween(66, 53, 78, 72);
+    g.generateTexture("enemyViper", 84, 92);
+
+    g.clear();
+    g.fillStyle(0x5cffff, 0.16);
+    g.fillEllipse(48, 48, 90, 78);
+    g.fillGradientStyle(0xffffff, 0x5cffff, 0xfff173, 0x7b4dff, 1, 1, 1, 1);
+    g.fillRoundedRect(11, 15, 74, 66, 18);
+    g.lineStyle(4, 0xfff173, 0.92);
+    g.strokeRoundedRect(11, 15, 74, 66, 18);
+    g.fillStyle(0x06111d, 0.86);
+    g.fillRoundedRect(25, 31, 46, 17, 8);
+    g.fillStyle(0xff4fec, 1);
+    g.fillCircle(35, 40, 4);
+    g.fillCircle(61, 40, 4);
+    g.fillStyle(0x30ffbd, 0.9);
+    g.fillTriangle(18, 77, 31, 100, 42, 77);
+    g.fillTriangle(54, 77, 66, 100, 79, 77);
+    g.lineStyle(2, 0xffffff, 0.7);
+    g.lineBetween(24, 25, 72, 25);
+    g.lineBetween(24, 61, 72, 61);
+    g.generateTexture("enemyWarden", 96, 104);
+
+    g.clear();
     g.fillStyle(0x22ff91, 0.16);
     g.fillEllipse(46, 50, 86, 70);
     g.fillGradientStyle(0x54ffb1, 0x27d986, 0x115c56, 0x2b1659, 1, 1, 1, 1);
@@ -482,6 +532,21 @@ class AlienStrikeScene extends Phaser.Scene {
     g.lineStyle(2, 0xffffff, 1);
     g.strokeCircle(16, 24, 21);
     g.generateTexture("pickupBomb", 32, 48);
+
+    g.clear();
+    g.fillStyle(0xfff173, 0.28);
+    g.fillCircle(18, 24, 23);
+    g.fillGradientStyle(0xffffff, 0xfff173, 0xff7b39, 0xff4fec, 1, 1, 1, 1);
+    g.fillTriangle(18, 0, 35, 34, 18, 50);
+    g.fillTriangle(18, 0, 1, 34, 18, 50);
+    g.fillStyle(0x5cffff, 1);
+    g.fillCircle(18, 25, 7);
+    g.lineStyle(3, 0xffffff, 0.95);
+    g.strokeCircle(18, 25, 20);
+    g.lineStyle(2, 0xfff173, 0.9);
+    g.lineBetween(18, 3, 18, 47);
+    g.lineBetween(3, 25, 33, 25);
+    g.generateTexture("pickupMega", 36, 52);
 
     g.clear();
     g.fillStyle(0xfff173, 0.18);
@@ -919,6 +984,16 @@ class AlienStrikeScene extends Phaser.Scene {
     this.cameras.main.flash(110, 48, 255, 189, false);
   }
 
+  private startMegaRounds(): void {
+    this.megaRoundsUntil = Math.min(
+      this.time.now + MEGA_ROUNDS_MAX,
+      Math.max(this.megaRoundsUntil, this.time.now) + MEGA_ROUNDS_DURATION,
+    );
+    this.score += 900;
+    this.flashBanner("MEGA ROUNDS");
+    this.cameras.main.flash(130, 255, 241, 115, false);
+  }
+
   private updateFiring(time: number): void {
     const keyboardFiring = this.keys.SPACE.isDown;
     const isFiring = this.rightStick.active || keyboardFiring;
@@ -1037,15 +1112,22 @@ class AlienStrikeScene extends Phaser.Scene {
     const bullet = this.bullets.get(x, y, this.weaponTexture(weapon)) as Phaser.Physics.Arcade.Image | null;
     if (!bullet) return;
 
+    const megaRounds = this.isMegaRounds(this.time.now);
+    const baseScale = options.heavy ? 1.28 : weapon === "laser" ? 1.12 : weapon === "explosive" ? 0.95 : 1;
     bullet.setActive(true).setVisible(true).setPosition(x, y).setDepth(18);
     bullet.setTexture(this.weaponTexture(weapon));
-    bullet.setScale(options.heavy ? 1.28 : weapon === "laser" ? 1.12 : weapon === "explosive" ? 0.95 : 1);
+    bullet.setScale(baseScale * (megaRounds ? MEGA_ROUNDS_SCALE : 1));
     bullet.setBlendMode(Phaser.BlendModes.ADD);
     bullet.setAngle(Phaser.Math.RadToDeg(direction.angle()) + 90);
-    bullet.setData("damage", damage);
+    if (megaRounds) {
+      bullet.setTint(0xfff173);
+    } else {
+      bullet.clearTint();
+    }
+    bullet.setData("damage", megaRounds ? damage + MEGA_ROUNDS_DAMAGE_BONUS : damage);
     bullet.setData("weapon", weapon);
     bullet.setData("pierceRemaining", options.pierceRemaining ?? 0);
-    bullet.setData("blastRadius", options.blastRadius ?? 0);
+    bullet.setData("blastRadius", megaRounds ? (options.blastRadius ?? 0) * 1.3 : (options.blastRadius ?? 0));
     bullet.setData("wavePhase", options.wavePhase ?? 0);
     bullet.setData("baseX", x);
     bullet.setData("born", this.time.now);
@@ -1078,7 +1160,15 @@ class AlienStrikeScene extends Phaser.Scene {
   }
 
   private spawnEnemy(difficulty: number): void {
-    const key = Phaser.Math.RND.pick(["enemySaucer", "enemyFang", "enemyOrbiter", "enemyStingray", "enemyCruiser"]);
+    const key = Phaser.Math.RND.pick([
+      "enemySaucer",
+      "enemyFang",
+      "enemyOrbiter",
+      "enemyStingray",
+      "enemyCruiser",
+      "enemyViper",
+      "enemyWarden",
+    ]);
     const enemy = this.enemies.get(Phaser.Math.Between(44, GAME_WIDTH - 44), -60, key) as Phaser.Physics.Arcade.Sprite | null;
     if (!enemy) return;
 
@@ -1088,6 +1178,8 @@ class AlienStrikeScene extends Phaser.Scene {
       enemyOrbiter: 4 + difficulty * 5,
       enemyStingray: 6 + difficulty * 6,
       enemyCruiser: 12 + difficulty * 10,
+      enemyViper: 18 + difficulty * 12,
+      enemyWarden: 24 + difficulty * 16,
     };
     const pointsByType: Record<string, number> = {
       enemySaucer: 120,
@@ -1095,10 +1187,12 @@ class AlienStrikeScene extends Phaser.Scene {
       enemyOrbiter: 160,
       enemyStingray: 240,
       enemyCruiser: 420,
+      enemyViper: 720,
+      enemyWarden: 960,
     };
     const hp = hpByType[key];
     enemy.setActive(true).setVisible(true).setTexture(key).setDepth(14);
-    enemy.setScale(key === "enemyCruiser" ? 0.86 : key === "enemyFang" ? 0.82 : 0.9);
+    enemy.setScale(key === "enemyCruiser" ? 0.86 : key === "enemyFang" ? 0.82 : key === "enemyWarden" ? 0.78 : 0.9);
     if (enemy.body) {
       enemy.body.enable = true;
       enemy.body.reset(enemy.x, -60);
@@ -1109,20 +1203,25 @@ class AlienStrikeScene extends Phaser.Scene {
       enemy.setCircle(34, 14, 18);
     } else if (key === "enemyCruiser") {
       enemy.setCircle(40, 16, 14);
+    } else if (key === "enemyViper") {
+      enemy.setCircle(31, 11, 15);
+    } else if (key === "enemyWarden") {
+      enemy.setCircle(36, 12, 14);
     } else if (key === "enemyOrbiter") {
       enemy.setCircle(26, 12, 12);
     } else {
       enemy.setCircle(29, 15, 8);
     }
+    const elite = key === "enemyViper" || key === "enemyWarden";
     enemy.setData({
       hp,
       maxHp: hp,
       points: pointsByType[key],
-      speed: Phaser.Math.Between(78, key === "enemyCruiser" ? 112 : 152) + difficulty * 46,
-      drift: Phaser.Math.FloatBetween(-1.7, 1.7),
+      speed: Phaser.Math.Between(78, key === "enemyCruiser" || key === "enemyWarden" ? 112 : 152) + difficulty * (elite ? 34 : 46),
+      drift: Phaser.Math.FloatBetween(elite ? -2.2 : -1.7, elite ? 2.2 : 1.7),
       born: this.time.now,
-      shootAt: this.time.now + Phaser.Math.Between(1700, 3000),
-      kind: "air",
+      shootAt: this.time.now + Phaser.Math.Between(elite ? 1300 : 1700, elite ? 2400 : 3000),
+      kind: elite ? "elite" : "air",
       pattern: key,
     });
   }
@@ -1224,6 +1323,8 @@ class AlienStrikeScene extends Phaser.Scene {
     const pattern = (enemy.getData("pattern") as string | undefined) ?? kind;
     const shots =
       kind === "boss" ? [-0.28, 0, 0.28] :
+      pattern === "enemyWarden" ? [-0.18, 0.18] :
+      pattern === "enemyViper" ? [0] :
       pattern === "enemyCruiser" ? [-0.2, 0.2] :
       pattern === "enemyStingray" ? [0] :
       pattern === "enemyOrbiter" ? [0] :
@@ -1245,6 +1346,7 @@ class AlienStrikeScene extends Phaser.Scene {
       bullet.setBlendMode(Phaser.BlendModes.ADD);
       const speed =
         kind === "boss" ? ENEMY_BULLET_SPEED_BOSS :
+        kind === "elite" ? ENEMY_BULLET_SPEED_FAST :
         pattern === "enemyOrbiter" ? ENEMY_BULLET_SPEED_FAST :
         kind === "ground" ? ENEMY_BULLET_SPEED_GROUND :
         ENEMY_BULLET_SPEED_DEFAULT;
@@ -1258,6 +1360,9 @@ class AlienStrikeScene extends Phaser.Scene {
     }
     if (kind === "ground") {
       return Phaser.Math.Between(2600, 4300);
+    }
+    if (kind === "elite") {
+      return Phaser.Math.Between(1600, 2900);
     }
     return Phaser.Math.Between(1800, 3300);
   }
@@ -1422,7 +1527,7 @@ class AlienStrikeScene extends Phaser.Scene {
 
     const kind = pickupObj.getData("kind") as PickupKind;
     this.recycleImage(pickupObj);
-    this.spark(playerObj.x, playerObj.y, kind === "fuel" ? 0x30ffbd : 0xfff173, 1.4);
+    this.spark(playerObj.x, playerObj.y, kind === "fuel" ? 0x30ffbd : kind === "mega" ? 0xfff173 : 0xfff173, kind === "mega" ? 1.9 : 1.4);
 
     if (kind === "weapon") {
       this.applyWeaponPickup((pickupObj.getData("weaponType") as WeaponType | undefined) ?? this.randomWeaponType());
@@ -1435,6 +1540,9 @@ class AlienStrikeScene extends Phaser.Scene {
     if (kind === "fuel") {
       this.startOverdrive();
     }
+    if (kind === "mega") {
+      this.startMegaRounds();
+    }
   }
 
   private destroyEnemy(enemy: Phaser.Physics.Arcade.Sprite, award = true): void {
@@ -1444,12 +1552,16 @@ class AlienStrikeScene extends Phaser.Scene {
 
     const points = Number(enemy.getData("points") ?? 100);
     const kind = enemy.getData("kind") as string;
-    this.explosion(enemy.x, enemy.y, kind === "ground" ? 0x30ffbd : 0xff60db, kind === "boss" ? 2.4 : 1);
+    this.explosion(enemy.x, enemy.y, kind === "ground" ? 0x30ffbd : kind === "elite" ? 0xfff173 : 0xff60db, kind === "boss" ? 2.4 : kind === "elite" ? 1.45 : 1);
 
     if (award) {
       this.score += points;
       this.kills += 1;
-      this.maybeDropPickup(enemy.x, enemy.y, kind);
+      if (kind === "elite") {
+        this.dropMegaPickup(enemy.x, enemy.y);
+      } else {
+        this.maybeDropPickup(enemy.x, enemy.y, kind);
+      }
     }
 
     if (kind === "boss" && !this.bossDefeated) {
@@ -1485,11 +1597,25 @@ class AlienStrikeScene extends Phaser.Scene {
     if (!pickup) return;
     pickup.setActive(true).setVisible(true).setTexture(texture).setDepth(19).setData("kind", pickupKind);
     pickup.setData("weaponType", pickupKind === "weapon" ? this.randomWeaponType() : null);
+    pickup.setScale(1);
     if (pickup.body) {
       pickup.body.enable = true;
       pickup.body.reset(x, y);
     }
     pickup.setVelocity(0, 115);
+  }
+
+  private dropMegaPickup(x: number, y: number): void {
+    const pickup = this.pickups.get(x, y, "pickupMega") as Phaser.Physics.Arcade.Image | null;
+    if (!pickup) return;
+    pickup.setActive(true).setVisible(true).setTexture("pickupMega").setDepth(20).setData("kind", "mega");
+    pickup.setData("weaponType", null);
+    pickup.setScale(1.18);
+    if (pickup.body) {
+      pickup.body.enable = true;
+      pickup.body.reset(x, y);
+    }
+    pickup.setVelocity(0, 95);
   }
 
   private dropBomb(): void {
@@ -1543,6 +1669,7 @@ class AlienStrikeScene extends Phaser.Scene {
     this.gameOver = true;
     this.lives = 0;
     this.overdriveUntil = 0;
+    this.megaRoundsUntil = 0;
     this.invulnerableUntil = Number.POSITIVE_INFINITY;
     this.player.setVelocity(0, 0).setAlpha(0.45).setAngle(0);
     if (this.player.body) {
@@ -1604,14 +1731,21 @@ class AlienStrikeScene extends Phaser.Scene {
     this.scoreText.setText(`SCORE ${scoreValue}`);
     this.killsText.setText(`KILLS ${this.kills}`);
     this.livesText.setText(`LIVES ${this.lives}`);
-    this.weaponText.setText(`${this.weaponLabel()} ${this.weaponLevel}`);
+    this.weaponText.setText(`${this.isMegaRounds(time) ? "MEGA " : ""}${this.weaponLabel()} ${this.weaponLevel}`);
     this.bombsText.setText(`BOMBS ${this.bombs}`);
 
     const overdriveLeft = Math.max(0, this.overdriveUntil - time);
+    const megaRoundsLeft = Math.max(0, this.megaRoundsUntil - time);
     const fuelWidth = overdriveLeft > 0 ? (overdriveLeft / 8500) * 154 : 0;
     this.fuelBar.width = fuelWidth;
     this.fuelBar.fillColor = overdriveLeft > 0 ? 0x31ffbd : 0x18394a;
-    this.fuelText.setText(overdriveLeft > 0 ? "OVERDRIVE " + (overdriveLeft / 1000).toFixed(1) : "FUEL PICKUP ARMS BOOST");
+    if (megaRoundsLeft > 0) {
+      this.fuelText.setText("MEGA ROUNDS " + (megaRoundsLeft / 1000).toFixed(1));
+      this.fuelText.setColor("#fff173");
+    } else {
+      this.fuelText.setText(overdriveLeft > 0 ? "OVERDRIVE " + (overdriveLeft / 1000).toFixed(1) : "FUEL PICKUP ARMS BOOST");
+      this.fuelText.setColor("#80ffc9");
+    }
 
     const elapsed = time - this.stageStart;
     if (this.bossDefeated) {
@@ -1633,6 +1767,10 @@ class AlienStrikeScene extends Phaser.Scene {
 
   private isOverdrive(time: number): boolean {
     return time < this.overdriveUntil;
+  }
+
+  private isMegaRounds(time: number): boolean {
+    return time < this.megaRoundsUntil;
   }
 
   private recycleImage(image: Phaser.Physics.Arcade.Image): void {
